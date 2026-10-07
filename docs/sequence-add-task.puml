@@ -1,0 +1,25 @@
+@startuml AddTask
+actor User
+participant "main.js" as Main
+participant TodoController as Controller
+participant TodoService as Service
+participant LocalStorageHandler as Storage
+participant TodoRenderer as Renderer
+
+User -> Main : click Add Task
+Main -> Controller : addTask(description, "simple")
+Controller -> Service : addTask(description, type)
+Service -> Service : validate and create Task
+Service -> Service : add Task to tasks
+Service -> Storage : save(tasks)
+Storage --> Service : saved
+Service --> Controller : task (or null)
+alt task was created
+  Controller -> Renderer : render(service, task.id)
+  Renderer --> Controller : rendered
+  Controller --> Main : task
+  Main -> Main : clear input
+else description invalid
+  Controller --> Main : null
+end
+@enduml

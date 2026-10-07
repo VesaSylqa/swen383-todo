@@ -22,6 +22,8 @@ runs in your browser. Nothing to install beyond Git, a browser, and an editor.
 - `src/LocalStorageHandler.js` - browser persistence
 - `src/TodoController.js` - coordinates UI events and domain operations
 - `src/InMemoryStorageHandler.js` - optional in-memory persistence
+- `docs/class-diagram.puml` - class relationships in the current design
+- `docs/sequence-add-task.puml` - Add Task interaction flow
 
 ## License
 

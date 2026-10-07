@@ -1,0 +1,60 @@
+@startuml TodoAppClassDiagram
+class TodoController {
+  - todoService: TodoService
+  - todoRenderer: TodoRenderer
+  + start()
+  + addTask(description, type)
+  + toggleTask(id)
+  + deleteTask(id)
+}
+
+class TodoService {
+  - storage: StorageHandler
+  - tasks: Task[]
+  + addTask(description, type)
+  + toggleComplete(id)
+  + deleteTask(id)
+  + getWorkloadSummary()
+}
+
+class TodoRenderer {
+  - container: HTMLElement
+  - toggleHandler: Function
+  - deleteHandler: Function
+  + onToggle(handler)
+  + onDelete(handler)
+  + render(service, justAddedId)
+}
+
+interface StorageHandler {
+  + load(): Task[]
+  + save(tasks)
+}
+
+class LocalStorageHandler {
+  + load(): Task[]
+  + save(tasks)
+}
+
+class InMemoryStorageHandler {
+  - tasks: Task[]
+  + load(): Task[]
+  + save(tasks)
+}
+
+class Task {
+  + id: Number
+  + desc: String
+  + completed: Boolean
+  + priority: String
+  + createdAt: String
+}
+
+TodoController --> TodoService : delegates domain operations
+TodoController --> TodoRenderer : coordinates display
+TodoRenderer ..> TodoService : reads task data
+TodoService --> StorageHandler : persists tasks
+StorageHandler <|.. LocalStorageHandler
+StorageHandler <|.. InMemoryStorageHandler
+TodoService "1" o-- "0..*" Task : owns
+@enduml
