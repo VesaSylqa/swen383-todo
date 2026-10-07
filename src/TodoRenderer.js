@@ -1,36 +1,45 @@
 // TodoRenderer owns the DOM: it draws both lists and wires the row buttons.
 export class TodoRenderer {
-  constructor(containerId, service) {
+  constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.service = service;
+    this.toggleHandler = () => {};
+    this.deleteHandler = () => {};
   }
 
-  renderPendingRows() {
+  onToggle(handler) {
+    this.toggleHandler = handler;
+  }
+
+  onDelete(handler) {
+    this.deleteHandler = handler;
+  }
+
+  renderPendingRows(service) {
     let html = '';
-    for (const task of this.service.tasks) {
+    for (const task of service.tasks) {
       if (task.completed) continue;
       html += buildTaskRow(task.id, task.desc, task.completed, task.priority, task.createdAt, true);
     }
     return html;
   }
 
-  renderCompletedRows() {
+  renderCompletedRows(service) {
     let html = '';
-    for (const task of this.service.tasks) {
+    for (const task of service.tasks) {
       if (!task.completed) continue;
       html += buildTaskRow(task.id, task.desc, task.completed, task.priority, task.createdAt, true);
     }
     return html;
   }
 
-  render(justAddedId) {
+  render(service, justAddedId) {
     if (!this.container) return;
 
-    const pendingHtml = this.renderPendingRows();
-    const completedHtml = this.renderCompletedRows();
+    const pendingHtml = this.renderPendingRows(service);
+    const completedHtml = this.renderCompletedRows(service);
 
     let oldestPendingLabel = 'none';
-    for (const task of this.service.tasks) {
+    for (const task of service.tasks) {
       if (!task.completed) {
         oldestPendingLabel = task.desc;
         break;
@@ -38,7 +47,7 @@ export class TodoRenderer {
     }
 
     this.container.innerHTML =
-      `<p class="status">${summarizeWorkload(this.service)} - oldest: ${oldestPendingLabel}</p>` +
+      `<p class="status">${service.getWorkloadSummary()} - oldest: ${oldestPendingLabel}</p>` +
       '<h2 class="section-title">To do</h2>' +
       `<ul>${pendingHtml || '<li>Nothing pending. Add a task above.</li>'}</ul>` +
       '<h2 class="section-title">Completed</h2>' +
@@ -46,18 +55,12 @@ export class TodoRenderer {
 
     const toggleButtons = this.container.querySelectorAll('[data-toggle]');
     for (const btn of toggleButtons) {
-      btn.addEventListener('click', () => {
-        this.service.toggleComplete(Number(btn.dataset.toggle));
-        this.render();
-      });
+      btn.addEventListener('click', () => this.toggleHandler(Number(btn.dataset.toggle)));
     }
 
     const deleteButtons = this.container.querySelectorAll('[data-delete]');
     for (const btn of deleteButtons) {
-      btn.addEventListener('click', () => {
-        this.service.deleteTask(Number(btn.dataset.delete));
-        this.render();
-      });
+      btn.addEventListener('click', () => this.deleteHandler(Number(btn.dataset.delete)));
     }
 
     if (justAddedId) {
@@ -68,7 +71,7 @@ export class TodoRenderer {
       }
     }
 
-    document.title = `Todo (${this.service.tasks.filter(t => !t.completed).length})`;
+    document.title = `Todo (${service.tasks.filter(t => !t.completed).length})`;
   }
 }
 
@@ -89,24 +92,4 @@ function buildTaskRow(id, desc, completed, priority, createdAt, showActions) {
       <span class="task-time">${createdAt}</span>
       ${actions}
     </li>`;
-}
-
-// A quick one-line summary of where the list stands, for the status bar.
-function summarizeWorkload(manager) {
-  let done = 0;
-  let urgent = 0;
-  let normal = 0;
-
-  for (const task of manager.tasks) {
-    if (task.completed) {
-      done++;
-    } else if (task.priority === 'high') {
-      urgent++;
-    } else {
-      normal++;
-    }
-  }
-
-  const total = manager.tasks.length;
-  return `${done}/${total} done - ${urgent} urgent, ${normal} normal remaining`;
 }
