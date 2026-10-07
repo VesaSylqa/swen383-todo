@@ -16,7 +16,12 @@ runs in your browser. Nothing to install beyond Git, a browser, and an editor.
 
 - `index.html` - page structure
 - `style.css` - styling
-- `src/todo.js` - application logic
+- `src/main.js` - application setup and object wiring
+- `src/TodoService.js` - task data and business operations
+- `src/TodoRenderer.js` - DOM rendering
+- `src/LocalStorageHandler.js` - browser persistence
+- `src/TodoController.js` - coordinates UI events and domain operations
+- `src/InMemoryStorageHandler.js` - optional in-memory persistence
 
 ## License
 

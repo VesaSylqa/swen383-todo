@@ -13,7 +13,6 @@ Smell: Six positional parameters (id, desc, completed, priority, createdAt, show
 
  (renderPendingRows / renderCompletedRows).
 
-#4 Feature Envy
+#4 Feature Envy - resolved in Week 4
 
-Where: src/todo.js, lines 122-138 (summarizeWorkload)
-Smell: A free function whose every line reaches into manager.tasks — it loops the tasks, counts done/urgent/normal, reads .length. It envies TodoManager's data and belongs on it as a method.
+The workload summary used to count tasks outside the class that owned them. `TodoService.getWorkloadSummary()` now performs that work, following GRASP Information Expert.
