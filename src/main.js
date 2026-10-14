@@ -15,15 +15,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const addUrgentBtn = document.getElementById('add-urgent-btn');
 
     addBtn.addEventListener('click', () => {
-        const task = controller.addTask(input.value, 'simple');
-        if (task) {
+        const newId = controller.addTask(input.value);
+        if (newId) {
             input.value = '';
         }
     });
 
     addUrgentBtn.addEventListener('click', () => {
-        const task = controller.addTask(input.value, 'urgent');
-        if (task) {
+        const newId = controller.addUrgentTask(input.value);
+        if (newId) {
             input.value = '';
         }
     });

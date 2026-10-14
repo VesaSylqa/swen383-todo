@@ -10,12 +10,20 @@ export class TodoController {
     this.todoRenderer.render(this.todoService);
   }
 
-  addTask(description, type) {
-    const task = this.todoService.addTask(description, type);
-    if (task) {
-      this.todoRenderer.render(this.todoService, task.id);
+  addTask(description) {
+    const newId = this.todoService.addTask(description);
+    if (newId) {
+      this.todoRenderer.render(this.todoService, newId);
     }
-    return task;
+    return newId;
+  }
+
+  addUrgentTask(description) {
+    const newId = this.todoService.addUrgentTask(description);
+    if (newId) {
+      this.todoRenderer.render(this.todoService, newId);
+    }
+    return newId;
   }
 
   toggleTask(id) {
