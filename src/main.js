@@ -1,12 +1,11 @@
-import { TodoService } from './TodoService.js';
 import { TodoRenderer } from './TodoRenderer.js';
-import { LocalStorageHandler } from './LocalStorageHandler.js';
 import { TodoController } from './TodoController.js';
+import { LocalStorageFactory } from './StorageFactory.js';
 
 // Composition root: the only place that decides which storage the app uses.
 window.addEventListener('DOMContentLoaded', () => {
-    const storage = new LocalStorageHandler();
-    const service = new TodoService(storage);
+    const factory = new LocalStorageFactory();
+    const service = factory.createService();
     const renderer = new TodoRenderer('task-container');
     const controller = new TodoController(service, renderer);
     controller.start();
