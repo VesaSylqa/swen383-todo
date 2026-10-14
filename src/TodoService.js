@@ -1,4 +1,6 @@
 // TodoService owns the task list and the operations on it. No DOM in here.
+import { TaskBuilder } from './TaskBuilder.js';
+
 export class TodoService {
     constructor(storage) {
         this.storage = storage;
@@ -27,7 +29,26 @@ export class TodoService {
         return `${done}/${this.tasks.length} done - ${urgent} urgent, ${normal} normal remaining`;
     }
 
-    addTask(description, type) {
+    addTask(description) {
+        const trimmed = this.validate(description);
+        if (!trimmed) return null;
+
+        const task = new TaskBuilder(trimmed).build();
+        return this.store(task);
+    }
+
+    addUrgentTask(description) {
+        const trimmed = this.validate(description);
+        if (!trimmed) return null;
+
+        const task = new TaskBuilder(trimmed)
+            .setPriority('high')
+            .addLabel('URGENT')
+            .build();
+        return this.store(task);
+    }
+
+    validate(description) {
         const trimmed = description.trim();
         if (trimmed.length < 3) {
             alert('Task needs at least a few characters.');
@@ -38,22 +59,13 @@ export class TodoService {
             console.warn('This list is getting long - consider clearing completed tasks.');
         }
 
-        const task = {
-            id: Date.now(),
-            desc: trimmed,
-            completed: false,
-            priority: 'normal',
-            createdAt: new Date().toLocaleTimeString()
-        };
+        return trimmed;
+    }
 
-        if (type === 'urgent') {
-            task.priority = 'high';
-            task.desc = `[URGENT] ${trimmed}`;
-        }
-
+    store(task) {
         this.tasks.push(task);
         this.saveTasks();
-        return task;
+        return task.id;
     }
 
     toggleComplete(id) {
