@@ -27,6 +27,7 @@ runs in your browser. Nothing to install beyond Git, a browser, and an editor.
 - `src/Task.js` and `src/TaskBuilder.js` - task construction
 - `src/IdeaBox.js` and `src/IdeaBoxAdapter.js` - adapts suggestion objects to task descriptions
 - `src/LoggingTodoServiceDecorator.js` - adds logging around TodoService
+- `src/ArchiveStorageHandler.js` and `src/StorageGroup.js` - archives every task through Composite storage
 - `docs/class-diagram.puml` - class relationships in the current design
 - `docs/sequence-add-task.puml` - Add Task interaction flow
 
