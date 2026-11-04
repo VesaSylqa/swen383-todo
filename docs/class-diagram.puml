@@ -42,6 +42,32 @@ class InMemoryStorageHandler {
   + save(tasks)
 }
 
+class StorageGroup {
+  - members: StorageHandler[]
+  + add(handler)
+  + load(): Task[]
+  + save(tasks)
+}
+
+class ArchiveStorageHandler {
+  + load(): Task[]
+  + save(tasks)
+}
+
+class StorageFactory {
+  + createService(): TodoService
+  + createStorage(): StorageHandler
+}
+
+class ArchivingStorageFactory {
+  + createStorage(): StorageHandler
+}
+
+class ConfirmDeleteProxy {
+  - todoService: TodoService
+  + deleteTask(id)
+}
+
 class Task {
   + id: Number
   + desc: String
@@ -56,5 +82,13 @@ TodoRenderer ..> TodoService : reads task data
 TodoService --> StorageHandler : persists tasks
 StorageHandler <|.. LocalStorageHandler
 StorageHandler <|.. InMemoryStorageHandler
+StorageHandler <|.. StorageGroup
+StorageHandler <|.. ArchiveStorageHandler
+StorageGroup o-- StorageHandler : delegates save to members
+StorageFactory <|-- ArchivingStorageFactory
+ArchivingStorageFactory --> StorageGroup : creates
+ArchivingStorageFactory --> LocalStorageHandler : adds
+ArchivingStorageFactory --> ArchiveStorageHandler : adds
+ConfirmDeleteProxy --> TodoService : confirms delete, forwards operations
 TodoService "1" o-- "0..*" Task : owns
 @enduml
