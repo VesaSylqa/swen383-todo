@@ -1,7 +1,8 @@
 # Todo App
 
-A small browser Todo list: add tasks, mark them complete, delete them. Tasks are kept in the
-browser's local storage. Plain HTML, CSS and JavaScript, no build step.
+A small browser Todo list: add tasks, mark them complete, delete them, and undo recent additions.
+An Observer keeps the open/done counter up to date. Tasks are kept in the browser's local storage.
+Plain HTML, CSS and JavaScript, no build step.
 
 This is the shared codebase for SWEN-383 (Software Design Principles and Patterns) at RIT Kosovo.
 Every student forks this repository in Week 1 and evolves it, week by week, as the course covers
@@ -29,6 +30,8 @@ runs in your browser. Nothing to install beyond Git, a browser, and an editor.
 - `src/LoggingTodoServiceDecorator.js` - adds logging around TodoService
 - `src/ArchiveStorageHandler.js` and `src/StorageGroup.js` - archives every task through Composite storage
 - `src/ConfirmDeleteProxy.js` - asks before forwarding task deletion
+- `src/TaskObservers.js` - observers, including the open/done task counter
+- `src/Commands.js` - Add command and history for Undo
 - `docs/class-diagram.puml` - class relationships in the current design
 - `docs/sequence-add-task.puml` - Add Task interaction flow
 

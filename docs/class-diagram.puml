@@ -6,15 +6,46 @@ class TodoController {
   + addTask(description, type)
   + toggleTask(id)
   + deleteTask(id)
+  + removeTask(id)
 }
 
 class TodoService {
   - storage: StorageHandler
   - tasks: Task[]
+  - observers: TaskObserver[]
+  + subscribe(observer)
+  + notify()
   + addTask(description, type)
   + toggleComplete(id)
   + deleteTask(id)
   + getWorkloadSummary()
+}
+
+abstract class TaskObserver {
+  + update(tasks)
+}
+
+class TaskCounter {
+  + update(tasks)
+}
+
+abstract class Command {
+  + execute()
+  + undo()
+}
+
+class AddTaskCommand {
+  - controller: TodoController
+  - description: String
+  - id: Number
+  + execute()
+  + undo()
+}
+
+class CommandHistory {
+  - done: Command[]
+  + run(command)
+  + undo()
 }
 
 class TodoRenderer {
@@ -78,8 +109,14 @@ class Task {
 
 TodoController --> TodoService : delegates domain operations
 TodoController --> TodoRenderer : coordinates display
+TodoController ..> AddTaskCommand : receiver
 TodoRenderer ..> TodoService : reads task data
 TodoService --> StorageHandler : persists tasks
+TodoService o-- TaskObserver : notifies
+TaskObserver <|-- TaskCounter
+Command <|-- AddTaskCommand
+CommandHistory o-- Command : records
+CommandHistory ..> Command : executes and undoes
 StorageHandler <|.. LocalStorageHandler
 StorageHandler <|.. InMemoryStorageHandler
 StorageHandler <|.. StorageGroup
