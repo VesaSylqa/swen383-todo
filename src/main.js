@@ -7,6 +7,7 @@ import { LoggingTodoServiceDecorator } from './LoggingTodoServiceDecorator.js';
 import { ConfirmDeleteProxy } from './ConfirmDeleteProxy.js';
 import { TaskCounter } from './TaskObservers.js';
 import { AddTaskCommand, CommandHistory } from './Commands.js';
+import { SortByName, SortByNewest } from './SortStrategy.js';
 
 // Composition root: the only place that decides which storage the app uses.
 window.addEventListener('DOMContentLoaded', () => {
@@ -54,5 +55,15 @@ window.addEventListener('DOMContentLoaded', () => {
         if (event.key === 'Enter') {
             addBtn.click();
         }
+    });
+
+    document.getElementById('sort-name-btn').addEventListener('click', () => {
+        todoService.setSortStrategy(new SortByName());
+        controller.start();
+    });
+
+    document.getElementById('sort-newest-btn').addEventListener('click', () => {
+        todoService.setSortStrategy(new SortByNewest());
+        controller.start();
     });
 });
