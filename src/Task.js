@@ -3,7 +3,6 @@ export class Task {
         this.id = Date.now();
         this.desc = builder.desc;
         this.completed = false;
-        this.status = 'open';
         this.priority = builder.priority;
         this.createdAt = new Date().toLocaleTimeString();
     }

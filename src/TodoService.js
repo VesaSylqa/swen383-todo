@@ -1,13 +1,11 @@
 // TodoService owns the task list and the operations on it. No DOM in here.
 import { TaskBuilder } from './TaskBuilder.js';
-import { stateOf } from './TaskState.js';
 
 export class TodoService {
     constructor(storage) {
         this.storage = storage;
         this.tasks = this.storage.load();
         this.observers = [];
-        this.sortStrategy = null;
     }
 
     subscribe(observer) {
@@ -77,28 +75,15 @@ export class TodoService {
 
     store(task) {
         this.tasks.push(task);
-        this.applySort();
         this.saveTasks();
         this.notify();
         return task.id;
     }
 
-    setSortStrategy(strategy) {
-        this.sortStrategy = strategy;
-        this.applySort();
-        this.notify();
-    }
-
-    applySort() {
-        if (this.sortStrategy) {
-            this.sortStrategy.sort(this.tasks);
-        }
-    }
-
     toggleComplete(id) {
         const task = this.tasks.find(t => t.id === id);
         if (!task) return;
-        stateOf(task).next(task);
+        task.completed = !task.completed;
         this.saveTasks();
         this.notify();
     }
